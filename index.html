@@ -1,1200 +1,180 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#05060c">
-
-    <link rel="icon" type="image/png" href="favicon.png">
-
-    <title>Valentins Jermakovs</title>
-
-    <style>
-        :root {
-            --void: #05060c;
-            --void-2: #090b16;
-            --panel: #0b0e1a;
-            --line: #1c2036;
-            --star: #e7e9f4;
-            --dim: #7d81a0;
-            --gold: #f2c368;
-            --gold-dim: #7a5f2c;
-
-            --mono:
-                'Fira Code',
-                'JetBrains Mono',
-                ui-monospace,
-                SFMono-Regular,
-                Menlo,
-                Consolas,
-                monospace;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html {
-            min-height: 100%;
-            background: var(--void);
-        }
-
-        body {
-            margin: 0;
-            min-width: 280px;
-            min-height: 100dvh;
-
-            background: var(--void);
-
-            font-family: var(--mono);
-            color: var(--star);
-
-            overflow-x: hidden;
-        }
-
-        /* ---------- reduced motion ---------- */
-
-        @media (prefers-reduced-motion: reduce) {
-
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.001ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.001ms !important;
-                scroll-behavior: auto !important;
-            }
-        }
-
-        /* ---------- starfield ---------- */
-
-        #sky {
-            position: fixed;
-            inset: 0;
-
-            width: 100%;
-            height: 100%;
-
-            display: block;
-
-            z-index: 0;
-
-            background:
-                radial-gradient(ellipse at 50% 30%,
-                    #0d1226 0%,
-                    #05060c 60%,
-                    #030308 100%);
-        }
-
-        /* ---------- stage ---------- */
-
-        .stage {
-            position: relative;
-            z-index: 2;
-
-            width: 100%;
-            height: 100dvh;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            padding: clamp(10px, 4vw, 48px);
-
-            overflow: hidden;
-        }
-
-        /* ==========================================================
-           ORBIT SYSTEM
-           ========================================================== */
-
-        .orbits {
-            position: absolute;
-
-            top: 50%;
-            left: 50%;
-
-            width: 0;
-            height: 0;
-
-            pointer-events: none;
-
-            transform: translate(-50%, -50%);
-
-            z-index: 1;
-        }
-
-        .ring {
-            position: absolute;
-
-            top: 50%;
-            left: 50%;
-
-            width: var(--orbit-size);
-            height: var(--orbit-size);
-
-            border: 1px solid rgba(125, 129, 160, 0.6);
-            border-radius: 50%;
-
-            transform: translate(-50%, -50%);
-
-            opacity: 0.85;
-        }
-
-        /* ---------- orbit sizes ---------- */
-
-        .r1 {
-            --orbit-size: min(430px, 54vmin);
-        }
-
-        .r2 {
-            --orbit-size: min(600px, 78vmin);
-
-            border-style: dashed;
-        }
-
-        .r3 {
-            --orbit-size: min(800px, 104vmin);
-        }
-
-        /* ---------- orbiters ---------- */
-
-        .orbiter {
-            position: absolute;
-
-            top: 50%;
-            left: 50%;
-
-            width: var(--orbit-size);
-            height: var(--orbit-size);
-
-            animation: spin linear infinite;
-
-            transform: translate(-50%, -50%);
-        }
-
-        .orbiter .body {
-            position: absolute;
-
-            left: 50%;
-            top: 0;
-
-            transform: translate(-50%, -50%);
-
-            font-size: clamp(15px, 2vw, 22px);
-
-            line-height: 1;
-
-            color: var(--star);
-
-            white-space: nowrap;
-
-            animation: spin-rev linear infinite;
-
-            transform-origin: center;
-
-            text-shadow:
-                0 0 10px rgba(231, 233, 244, 0.35);
-        }
-
-        .o1 {
-            --orbit-size: min(430px, 54vmin);
-
-            animation-duration: 38s;
-        }
-
-        .o1 .body {
-            animation-duration: 38s;
-
-            font-size:
-                clamp(16px, 2.2vw, 24px);
-        }
-
-        .o2 {
-            --orbit-size: min(600px, 78vmin);
-
-            animation-duration: 64s;
-
-            animation-direction: reverse;
-        }
-
-        .o2 .body {
-            animation-duration: 64s;
-
-            animation-direction: reverse;
-
-            color: var(--gold);
-
-            font-size:
-                clamp(17px, 2.4vw, 26px);
-
-            text-shadow:
-                0 0 12px rgba(242, 195, 104, 0.45);
-        }
-
-        .o3 {
-            --orbit-size: min(800px, 104vmin);
-
-            animation-duration: 96s;
-        }
-
-        .o3 .body {
-            animation-duration: 96s;
-
-            font-size:
-                clamp(14px, 1.8vw, 20px);
-        }
-
-        /* ---------- orbit animation ---------- */
-
-        @keyframes spin {
-            to {
-                transform:
-                    translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        @keyframes spin-rev {
-            to {
-                transform:
-                    translate(-50%, -50%) rotate(-360deg);
-            }
-        }
-
-        /* ---------- sun ---------- */
-
-        .sun {
-            position: absolute;
-
-            top: 50%;
-            left: 50%;
-
-            transform: translate(-50%, -50%);
-
-            color: var(--gold-dim);
-
-            font-size:
-                clamp(7px, 1vw, 10px);
-
-            line-height: 1.15;
-
-            white-space: pre;
-
-            text-align: center;
-
-            opacity: 0.35;
-
-            user-select: none;
-
-            animation:
-                pulse 6s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 0.28;
-            }
-
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        /* ==========================================================
-           CARD
-           ========================================================== */
-
-        .card {
-            position: relative;
-
-            z-index: 3;
-
-            width: min(560px,
-                    calc(100vw - 32px));
-
-            max-height:
-                calc(100dvh - 32px);
-
-            overflow-y: auto;
-            overflow-x: hidden;
-
-            background:
-                linear-gradient(180deg,
-                    rgba(11, 14, 26, 0.94),
-                    rgba(7, 9, 17, 0.96));
-
-            border: 1px solid var(--line);
-
-            box-shadow:
-                0 0 0 1px rgba(242, 195, 104, 0.04),
-                0 30px 80px rgba(0, 0, 0, 0.6);
-
-            padding: 0;
-
-            scrollbar-width: thin;
-
-            scrollbar-color:
-                var(--line) transparent;
-        }
-
-        /* ---------- card header ---------- */
-
-        .card-head {
-            display: flex;
-
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 12px;
-
-            padding:
-                10px clamp(12px, 3vw, 16px);
-
-            border-bottom:
-                1px solid var(--line);
-
-            font-size:
-                clamp(10px, 2vw, 12px);
-
-            color: var(--dim);
-        }
-
-        .card-head .dots {
-            display: flex;
-
-            gap: 6px;
-
-            flex-shrink: 0;
-        }
-
-        .card-head .dots span {
-            width: 8px;
-            height: 8px;
-
-            border-radius: 50%;
-
-            background: var(--line);
-        }
-
-        .card-head .path {
-            min-width: 0;
-
-            overflow: hidden;
-
-            text-overflow: ellipsis;
-
-            white-space: nowrap;
-
-            letter-spacing: 0.02em;
-        }
-
-        /* ---------- card body ---------- */
-
-        .card-body {
-            padding:
-                clamp(22px, 5vw, 32px) clamp(16px, 5vw, 30px) clamp(20px, 4vw, 28px);
-        }
-
-        .name {
-            margin: 0 0 6px;
-
-            font-size:
-                clamp(18px, 4vw, 23px);
-
-            line-height: 1.25;
-
-            font-weight: 700;
-
-            color: var(--star);
-
-            letter-spacing: 0.01em;
-
-            overflow-wrap: anywhere;
-        }
-
-        .name .caret {
-            display: inline-block;
-
-            color: var(--gold);
-
-            margin-left: 2px;
-
-            animation:
-                blink 1.1s step-end infinite;
-        }
-
-        @keyframes blink {
-            50% {
-                opacity: 0;
-            }
-        }
-
-        .role {
-            margin: 0 0 22px;
-
-            font-size:
-                clamp(11px, 2.5vw, 13px);
-
-            line-height: 1.5;
-
-            color: var(--dim);
-
-            overflow-wrap: anywhere;
-        }
-
-        .role b {
-            color: var(--gold);
-
-            font-weight: 500;
-        }
-
-        .typed {
-            min-height: 3.6em;
-
-            margin-bottom: 20px;
-
-            font-size:
-                clamp(11px, 2.5vw, 13px);
-
-            line-height: 1.6;
-
-            color: var(--star);
-
-            white-space: pre-wrap;
-
-            overflow-wrap: anywhere;
-        }
-
-        .typed .prompt {
-            color: var(--gold);
-        }
-
-        hr.sep {
-            border: none;
-
-            border-top:
-                1px solid var(--line);
-
-            margin:
-                clamp(14px, 4vw, 18px) 0;
-        }
-
-        /* ---------- links ---------- */
-
-        .links {
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 8px;
-
-            font-size:
-                clamp(11px, 2.5vw, 13px);
-        }
-
-        .links a {
-            color: var(--star);
-
-            text-decoration: none;
-
-            display: flex;
-
-            align-items: flex-start;
-
-            gap: 10px;
-
-            min-width: 0;
-
-            padding: 8px;
-
-            margin: 0 -8px;
-
-            border: 1px solid transparent;
-
-            transition:
-                border-color 0.15s ease,
-                color 0.15s ease;
-        }
-
-        .links a span:last-child {
-            min-width: 0;
-
-            overflow-wrap: anywhere;
-
-            word-break: break-word;
-        }
-
-        .links a .cmd {
-            color: var(--gold);
-
-            flex-shrink: 0;
-
-            white-space: nowrap;
-        }
-
-        .links a:hover {
-            border-color: var(--line);
-
-            color: var(--gold);
-        }
-
-        .links a:hover .cmd {
-            color: var(--star);
-        }
-
-        .links a:focus-visible {
-            outline:
-                1px solid var(--gold);
-
-            outline-offset: 2px;
-        }
-
-        /* ---------- footer ---------- */
-
-        .quote {
-            margin: 22px 0 0;
-
-            font-size:
-                clamp(10px, 2.3vw, 12px);
-
-            line-height: 1.6;
-
-            color: var(--dim);
-
-            font-style: normal;
-
-            overflow-wrap: anywhere;
-        }
-
-        .quote::before {
-            content: "# ";
-
-            color: var(--gold-dim);
-        }
-
-        .stack {
-            margin-top: 18px;
-
-            font-size:
-                clamp(9px, 2vw, 11px);
-
-            line-height: 1.7;
-
-            color: var(--dim);
-
-            letter-spacing: 0.02em;
-
-            overflow-wrap: anywhere;
-        }
-
-        .stack span {
-            color: var(--gold-dim);
-        }
-
-        /* ==========================================================
-           TABLETS
-           ========================================================== */
-
-        @media (max-width: 900px) {
-
-            .card {
-                width: min(560px,
-                        calc(100vw - 44px));
-            }
-
-            .r3,
-            .o3 {
-                display: none;
-            }
-
-            .r2,
-            .o2 {
-                --orbit-size: min(560px, 94vmin);
-            }
-        }
-
-        /* ==========================================================
-           PHONES
-           ========================================================== */
-
-        @media (max-width: 600px) {
-
-            .stage {
-                padding: 10px;
-            }
-
-            /*
-             * Important:
-             *
-             * The card is deliberately narrower than the viewport.
-             * This leaves a visible strip of orbit around its sides.
-             */
-
-            .card {
-                width: min(88vw,
-                        540px);
-
-                max-height:
-                    calc(100dvh - 20px);
-            }
-
-            .r1,
-            .o1 {
-                --orbit-size: min(98vw,
-                        62vmin);
-            }
-
-            .r2,
-            .o2 {
-                --orbit-size: min(122vw,
-                        78vmin);
-            }
-
-            .r3,
-            .o3 {
-                display: none;
-            }
-        }
-
-        /* ==========================================================
-           SMALL PHONES
-           ========================================================== */
-
-        @media (max-width: 480px) {
-
-            .card {
-                width: 84vw;
-
-                max-height:
-                    calc(100dvh - 18px);
-            }
-
-            /*
-             * Keep the first orbit larger than the card.
-             * Its side portions remain visible.
-             */
-
-            .r1,
-            .o1 {
-                --orbit-size: min(108vw,
-                        72vmin);
-            }
-
-            .r2,
-            .o2 {
-                display: none;
-            }
-
-            .card-head {
-                padding-left: 12px;
-                padding-right: 12px;
-            }
-
-            .card-body {
-                padding:
-                    22px 16px 20px;
-            }
-
-            .links a {
-                gap: 8px;
-            }
-        }
-
-        /* ==========================================================
-           VERY SMALL PHONES
-           ========================================================== */
-
-        @media (max-width: 360px) {
-
-            .card {
-                width: 82vw;
-            }
-
-            .r1,
-            .o1 {
-                --orbit-size: min(112vw,
-                        70vmin);
-            }
-
-            .card-body {
-                padding:
-                    20px 14px 18px;
-            }
-
-            .links a {
-                flex-direction: column;
-
-                gap: 2px;
-
-                padding-top: 7px;
-                padding-bottom: 7px;
-            }
-
-            .links a .cmd {
-                font-size: 0.95em;
-            }
-
-            .quote {
-                margin-top: 18px;
-            }
-
-            .stack {
-                margin-top: 14px;
-            }
-        }
-
-        /* ==========================================================
-           LANDSCAPE PHONES
-           ========================================================== */
-
-        @media (max-height: 600px) and (orientation: landscape) {
-
-            .stage {
-                padding: 8px;
-            }
-
-            .card {
-                width: min(560px,
-                        calc(100vw - 36px));
-
-                max-height:
-                    calc(100dvh - 16px);
-            }
-
-            .card-body {
-                padding-top: 18px;
-                padding-bottom: 18px;
-            }
-
-            .role {
-                margin-bottom: 14px;
-            }
-
-            .typed {
-                margin-bottom: 14px;
-            }
-
-            hr.sep {
-                margin-top: 12px;
-                margin-bottom: 12px;
-            }
-
-            .quote {
-                margin-top: 14px;
-            }
-
-            .stack {
-                margin-top: 12px;
-            }
-
-            /*
-             * In landscape the height is the main limitation.
-             */
-
-            .r1,
-            .o1 {
-                --orbit-size: min(64vh,
-                        340px);
-            }
-
-            .r2,
-            .o2,
-            .r3,
-            .o3 {
-                display: none;
-            }
-        }
-
-        /* ==========================================================
-           EXTREMELY SHORT LANDSCAPE
-           ========================================================== */
-
-        @media (max-height: 420px) and (orientation: landscape) {
-
-            .card {
-                width: min(560px,
-                        calc(100vw - 24px));
-            }
-
-            .r1,
-            .o1 {
-                --orbit-size: min(72vh,
-                        240px);
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Valentins Jermakovs | Backend developer</title>
+  <meta name="description" content="Self-taught developer. Backend systems, APIs, Python, JavaScript, FastAPI, PostgreSQL, Redis, Linux, Docker and local LLMs.">
+  <meta name="theme-color" content="#161616">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230f62fe'/%3E%3Cpath d='M6 8h5l5 14 5-14h5l-8 18h-4z' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add("js");</script>
 </head>
-
 <body>
+  <div class="progress" aria-hidden="true"></div>
+  <a class="skip" href="#main">Skip to main content</a>
 
-    <canvas id="sky"></canvas>
+  <header class="header">
+    <div class="header__inner">
+      <a class="brand" href="#top" aria-label="Valentins Jermakovs, home">
+        <span class="brand__mark" aria-hidden="true">VJ</span>
+        <span class="brand__name">Valentins Jermakovs</span>
+      </a>
+      <nav class="nav" id="nav" aria-label="Main">
+        <a href="#about">About</a>
+        <a href="#stack">Stack</a>
+        <a href="#focus">Focus</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="header__actions">
+        <button class="icon-btn" id="theme" type="button" aria-label="Switch to light theme">
+          <svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M16 22a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0-2a4 4 0 1 1 0-8 4 4 0 0 1 0 8ZM15 2h2v5h-2zM15 25h2v5h-2zM2 15h5v2H2zM25 15h5v2h-5zM6.1 7.5l1.4-1.4 3.5 3.5-1.4 1.4zM21.4 22.8l1.4-1.4 3.5 3.5-1.4 1.4zM6.1 24.5l3.5-3.5 1.4 1.4-3.5 3.5zM21.4 9.2l3.5-3.5 1.4 1.4-3.5 3.5z"/></svg>
+        </button>
+        <button class="icon-btn burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
 
-    <div class="stage">
-
-        <!-- ---------- orbit system ---------- -->
-
-        <div class="orbits">
-
-            <pre class="sun">      .
-   .  ⟡  .
- ·  \|/  ·
---- ( ) ---
- ·  /|\  ·
-   .  '  .
-      .</pre>
-
-            <div class="ring r1"></div>
-            <div class="ring r2"></div>
-            <div class="ring r3"></div>
-
-            <div class="orbiter o1">
-                <div class="body">( • )</div>
-            </div>
-
-            <div class="orbiter o2">
-                <div class="body">☉ ─ ◐</div>
-            </div>
-
-            <div class="orbiter o3">
-                <div class="body">· ° ·</div>
-            </div>
-
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="container hero__grid">
+        <div class="hero__text">
+          <p class="eyebrow reveal">Backend developer</p>
+          <h1 class="reveal" style="--d:80ms">Backend systems and APIs, built to run.</h1>
+          <p class="lead reveal" style="--d:160ms">I am a self-taught developer. I design APIs, store data in PostgreSQL and Redis, and host services on Linux with Docker.</p>
+          <div class="actions reveal" style="--d:240ms">
+            <a class="btn btn--primary" href="https://github.com/Valentins-Jermakovs" target="_blank" rel="noopener">
+              View GitHub <svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M18 6l-1.4 1.4L24.2 15H4v2h20.2l-7.6 7.6L18 26l10-10z"/></svg>
+            </a>
+            <a class="btn btn--secondary" href="#stack">See the stack</a>
+          </div>
         </div>
 
-        <!-- ---------- card ---------- -->
-
-        <main class="card" role="main" aria-label="Визитная карточка Valentins Jermakovs">
-
-            <div class="card-head">
-
-                <span class="path">
-                    ~/valentins/contact.card
-                </span>
-
-                <span class="dots" aria-hidden="true">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </span>
-
+        <div class="term reveal" style="--d:200ms" aria-label="Profile summary">
+          <div class="term__bar">
+            <span class="term__dots" aria-hidden="true"><i></i><i></i><i class="on"></i></span>
+            <span class="term__title">valentins@github: ~</span>
+          </div>
+          <div class="term__body">
+            <p class="term__cmd"><span class="prompt">$</span> <span id="typed" data-text="fastfetch">fastfetch</span><span class="cursor" aria-hidden="true"></span></p>
+            <div class="term__cols">
+              <div class="logo" id="logo" aria-hidden="true"></div>
+              <div class="info">
+                <p class="info__id">valentins<span>@</span>github</p>
+                <dl class="info__list">
+                  <div class="row"><dt>Role</dt><dd>Self-taught developer</dd></div>
+                  <div class="row"><dt>Focus</dt><dd>Backend systems, APIs</dd></div>
+                  <div class="row"><dt>Lang</dt><dd>Python, JavaScript</dd></div>
+                  <div class="row"><dt>Stack</dt><dd>FastAPI, PostgreSQL, Redis</dd></div>
+                  <div class="row"><dt>Infra</dt><dd>Linux, Docker, self-hosted</dd></div>
+                  <div class="row"><dt>AI</dt><dd>Local LLMs</dd></div>
+                  <div class="row"><dt>Interests</dt><dd>Backend architecture, open source</dd></div>
+                  <div class="row"><dt>GitHub</dt><dd>@Valentins-Jermakovs</dd></div>
+                </dl>
+                <div class="swatches" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            <div class="card-body">
+    <section class="section" id="about">
+      <div class="container split">
+        <h2 class="reveal">About</h2>
+        <div class="split__body">
+          <p class="big reveal">I learned to build software on my own, and I focus on the part users never see: the services, data and access rules behind an application.</p>
+          <p class="reveal" style="--d:80ms">I write in Python and JavaScript. I build APIs with FastAPI, keep data in PostgreSQL, and use Redis where a fast store helps. I run my own services on Linux and package them with Docker.</p>
+          <p class="reveal" style="--d:140ms">I am interested in backend architecture and open source, and I run language models locally.</p>
+        </div>
+      </div>
+    </section>
 
-                <h1 class="name">
-                    Valentins Jermakovs
-                    <span class="caret">▌</span>
-                </h1>
+    <section class="section section--alt" id="stack">
+      <div class="container">
+        <h2 class="reveal">Stack</h2>
+        <p class="section__intro reveal" style="--d:60ms">The tools I use to build and run backend services.</p>
+        <ul class="tiles">
+          <li class="tile tile--white reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><rect class="ia" x="8" y="8" width="34" height="34"/><rect class="ib" x="22" y="18" width="34" height="34"/></svg>
+            <p class="tile__label">Python</p><p class="tile__tag">Language</p>
+          </li>
+          <li class="tile tile--dark reveal" style="--d:60ms">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><g fill="none" class="sb" stroke-width="5"><path d="M26 10H16V30H10V34H16V54H26"/><path d="M38 10H48V30H54V34H48V54H38"/></g><rect class="ia" x="29.5" y="29.5" width="5" height="5"/></svg>
+            <p class="tile__label">JavaScript</p><p class="tile__tag">Language</p>
+          </li>
+          <li class="tile tile--light reveal" style="--d:120ms">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke-width="6"><polyline points="10,12 28,32 10,52" stroke="#78a9ff"/><polyline points="24,12 42,32 24,52" stroke="#4589ff"/><polyline points="38,12 56,32 38,52" stroke="#0f62fe"/></g></svg>
+            <p class="tile__label">FastAPI</p><p class="tile__tag">Framework</p>
+          </li>
+          <li class="tile tile--blue reveal" style="--d:180ms">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><g class="sb" fill="none" stroke-width="4"><ellipse cx="32" cy="14" rx="22" ry="8" fill="#d0e2ff"/><path d="M10 14V48A22 8 0 0 0 54 48V14"/><path d="M10 31A22 8 0 0 0 54 31"/></g></svg>
+            <p class="tile__label">PostgreSQL / Redis</p><p class="tile__tag">Data</p>
+          </li>
+          <li class="tile tile--dark reveal">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><rect class="ia" x="6" y="12" width="14" height="14"/><rect class="sb" fill="none" stroke-width="3" x="25.5" y="13.5" width="11" height="11"/><rect class="ia" x="44" y="12" width="14" height="14"/><rect class="sb" fill="none" stroke-width="3" x="7.5" y="33.5" width="11" height="11"/><rect class="ia" x="25" y="32" width="14" height="14"/><rect class="sb" fill="none" stroke-width="3" x="45.5" y="33.5" width="11" height="11"/></svg>
+            <p class="tile__label">Linux / Docker</p><p class="tile__tag">Infrastructure</p>
+          </li>
+          <li class="tile tile--light reveal" style="--d:60ms">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><rect fill="#161616" x="6" y="14" width="16" height="16"/><rect fill="#0f62fe" x="26" y="14" width="26" height="16"/><rect fill="#c6c6c6" x="56" y="14" width="4" height="16"/><rect fill="#0f62fe" x="6" y="38" width="54" height="4"/><rect fill="#0f62fe" x="6" y="46" width="34" height="4"/></svg>
+            <p class="tile__label">JWT / RBAC</p><p class="tile__tag">Security</p>
+          </li>
+          <li class="tile tile--blue tile--wide reveal" style="--d:120ms">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><g class="sb" fill="none" stroke-width="3"><rect x="16" y="16" width="32" height="32"/><path d="M24 6V16M32 6V16M40 6V16M24 48V58M32 48V58M40 48V58M6 24H16M6 32H16M6 40H16M48 24H58M48 32H58M48 40H58"/></g><rect class="sb" fill="currentColor" x="27" y="27" width="10" height="10"/></svg>
+            <p class="tile__label">Local LLMs</p><p class="tile__tag">AI</p>
+          </li>
+        </ul>
+      </div>
+    </section>
 
-                <p class="role">
-                    systems <b>|</b>
-                    infrastructure <b>|</b>
-                    local AI
-                </p>
+    <section class="section" id="focus">
+      <div class="container split">
+        <h2 class="reveal">Focus</h2>
+        <ul class="list">
+          <li class="list__item reveal">
+            <h3>Backend systems and APIs</h3>
+            <p>Design services with clear contracts, built on FastAPI.</p>
+          </li>
+          <li class="list__item reveal" style="--d:60ms">
+            <h3>Access control</h3>
+            <p>Protect endpoints with JWT and role-based access control (RBAC).</p>
+          </li>
+          <li class="list__item reveal" style="--d:120ms">
+            <h3>Self-hosted infrastructure</h3>
+            <p>Run services on Linux and package them with Docker.</p>
+          </li>
+          <li class="list__item reveal" style="--d:180ms">
+            <h3>Local language models</h3>
+            <p>Run LLMs on my own hardware.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
 
-                <div class="typed" id="typed" aria-live="polite"></div>
+    <section class="section section--cta" id="contact">
+      <div class="container">
+        <h2 class="reveal">Contact</h2>
+        <p class="section__intro reveal" style="--d:60ms">Find my code and open source work on GitHub.</p>
+        <a class="cta reveal" style="--d:120ms" href="https://github.com/Valentins-Jermakovs" target="_blank" rel="noopener">
+          <span>github.com/Valentins-Jermakovs</span>
+          <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><path fill="currentColor" d="M18 6l-1.4 1.4L24.2 15H4v2h20.2l-7.6 7.6L18 26l10-10z"/></svg>
+        </a>
+      </div>
+    </section>
+  </main>
 
-                <hr class="sep">
-
-                <nav class="links" aria-label="Контактные ссылки">
-
-                    <a href="mailto:jermakovsvalentins@gmail.com">
-
-                        <span class="cmd">
-                            $ mail
-                        </span>
-
-                        <span>
-                            jermakovsvalentins@gmail.com
-                        </span>
-
-                    </a>
-
-                    <a href="https://github.com/Valentins-Jermakovs" target="_blank" rel="noopener noreferrer">
-
-                        <span class="cmd">
-                            $ open
-                        </span>
-
-                        <span>
-                            github.com/Valentins-Jermakovs
-                        </span>
-
-                    </a>
-
-                </nav>
-
-                <hr class="sep">
-
-                <p class="quote">
-                    "Somewhere, something incredible is waiting to be known."
-                    — Carl Sagan
-                </p>
-
-                <p class="stack">
-                    <span>stack:</span>
-                    C# · Python · JS · FastAPI · Postgres · Redis · local LLMs · Ubuntu
-                </p>
-
-            </div>
-
-        </main>
-
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p>&copy; <span id="year">2026</span> Valentins Jermakovs</p>
+      <a href="#top">Back to top</a>
     </div>
+  </footer>
 
-    <script>
-
-        /* ==========================================================
-           STARFIELD
-           ========================================================== */
-
-        const canvas =
-            document.getElementById('sky');
-
-        const ctx =
-            canvas.getContext('2d');
-
-        let stars = [];
-
-        function resize() {
-
-            const ratio =
-                Math.min(
-                    window.devicePixelRatio || 1,
-                    2
-                );
-
-            canvas.width =
-                Math.floor(
-                    window.innerWidth * ratio
-                );
-
-            canvas.height =
-                Math.floor(
-                    window.innerHeight * ratio
-                );
-
-            canvas.style.width =
-                `${window.innerWidth}px`;
-
-            canvas.style.height =
-                `${window.innerHeight}px`;
-
-            ctx.setTransform(
-                ratio,
-                0,
-                0,
-                ratio,
-                0,
-                0
-            );
-
-            const area =
-                window.innerWidth *
-                window.innerHeight;
-
-            const count =
-                Math.min(
-                    550,
-                    Math.max(
-                        70,
-                        Math.floor(
-                            area / 4200
-                        )
-                    )
-                );
-
-            stars =
-                Array.from(
-                    {
-                        length: count
-                    },
-                    () => ({
-                        x:
-                            Math.random() *
-                            window.innerWidth,
-
-                        y:
-                            Math.random() *
-                            window.innerHeight,
-
-                        r:
-                            Math.random() *
-                            1.2 +
-                            0.2,
-
-                        base:
-                            Math.random() *
-                            0.5 +
-                            0.25,
-
-                        speed:
-                            Math.random() *
-                            0.015 +
-                            0.004,
-
-                        phase:
-                            Math.random() *
-                            Math.PI *
-                            2
-                    })
-                );
-        }
-
-        window.addEventListener(
-            'resize',
-            resize
-        );
-
-        resize();
-
-        const reduceMotion =
-            window.matchMedia(
-                '(prefers-reduced-motion: reduce)'
-            ).matches;
-
-        function draw(t) {
-
-            ctx.clearRect(
-                0,
-                0,
-                window.innerWidth,
-                window.innerHeight
-            );
-
-            for (const s of stars) {
-
-                const tw =
-                    reduceMotion
-                        ? s.base
-                        : s.base +
-                        Math.sin(
-                            t * s.speed +
-                            s.phase
-                        ) * 0.35;
-
-                ctx.globalAlpha =
-                    Math.max(
-                        0,
-                        Math.min(
-                            1,
-                            tw
-                        )
-                    );
-
-                ctx.fillStyle =
-                    '#e7e9f4';
-
-                ctx.beginPath();
-
-                ctx.arc(
-                    s.x,
-                    s.y,
-                    s.r,
-                    0,
-                    Math.PI * 2
-                );
-
-                ctx.fill();
-            }
-
-            ctx.globalAlpha = 1;
-
-            if (!reduceMotion) {
-                requestAnimationFrame(draw);
-            }
-        }
-
-        requestAnimationFrame(draw);
-
-        /* ==========================================================
-           TYPEWRITER
-           ========================================================== */
-
-        const lines = [
-            'build. break. learn. improve. repeat.',
-            'running local models on my own hardware.'
-        ];
-
-        const el =
-            document.getElementById('typed');
-
-        function typeLine(
-            lineIndex,
-            charIndex,
-            html
-        ) {
-
-            if (
-                lineIndex >=
-                lines.length
-            ) {
-                return;
-            }
-
-            const line =
-                lines[lineIndex];
-
-            if (charIndex === 0) {
-                html +=
-                    '<span class="prompt">$ </span>';
-            }
-
-            if (
-                charIndex <=
-                line.length
-            ) {
-
-                el.innerHTML =
-                    html +
-                    line.slice(
-                        0,
-                        charIndex
-                    );
-
-                setTimeout(
-                    () =>
-                        typeLine(
-                            lineIndex,
-                            charIndex + 1,
-                            html
-                        ),
-                    28 +
-                    Math.random() * 35
-                );
-
-            } else {
-
-                el.innerHTML =
-                    html +
-                    line +
-                    '\n';
-
-                setTimeout(
-                    () =>
-                        typeLine(
-                            lineIndex + 1,
-                            0,
-                            html +
-                            line +
-                            '\n'
-                        ),
-                    380
-                );
-            }
-        }
-
-        typeLine(
-            0,
-            0,
-            ''
-        );
-
-    </script>
-
+  <script src="script.js"></script>
 </body>
-
 </html>
